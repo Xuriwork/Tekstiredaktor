@@ -6,7 +6,7 @@
 	let characterCount = editorContent.length;
 	let lineCount = 0;
 	let fileInput;
-	let filename;
+	let isModalOpen = false;
 	
 	const calculateWordCount = () => {
 		const spiltWords = editorContent.trim().split(/\s+/);
@@ -24,15 +24,16 @@
 
 	const anchor = document.createElement('a');
 
-	const saveFile = (text, name) => {
-		const blob = new Blob([text], fileType);
+	const saveFile = (filename) => {
+		const blob = new Blob([editorContent], fileType);
 		const objURL = URL.createObjectURL(blob);
 
 		anchor.href = objURL;
-		anchor.download = name;
+		anchor.download = filename;
 		anchor.click();
 		
 		URL.revokeObjectURL(objURL);
+		closeModal();
 	};
 
 	const openInput = () => fileInput.click();
@@ -46,6 +47,9 @@
 		reader.onload = () => editorContent = reader.result;
 		reader.onerror = () => console.log(reader.error);
 	};
+
+	const openModal = () => isModalOpen = !isModalOpen;
+	const closeModal = () => isModalOpen = false;
 
 </script>
 
@@ -68,7 +72,7 @@
 		</div>
 		<div class='buttons-container'>
 			<button on:click={openInput}>Open</button>
-			<button on:click={saveFile}>Save</button>
+			<button on:click={openModal}>Save</button>
 		</div>
 		<input 
 			type='file' 
@@ -79,7 +83,9 @@
 			on:click={clearInput}
 		/>
 	</div>
-	<Modal filename={filename} />
+	{#if isModalOpen}
+		<Modal saveFile={saveFile} closeModal={closeModal} />
+	{/if}
 </div>
 
 <style type='scss'>
@@ -119,6 +125,20 @@
 
 			&::placeholder {
 				color: #A4AEBA;
+			}
+
+			&::-webkit-scrollbar-track	{
+				border-radius: 6px;
+			}
+
+			&::-webkit-scrollbar {
+				width: 6px;
+				border-radius: 6px;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background-color: #81E5D9;
+				border-radius: 6px;
 			}
 		}
 	}

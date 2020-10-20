@@ -1,14 +1,17 @@
 <script>
-    export let filename;
+    let filename;
+    export let saveFile;
+    export let closeModal;
+    
 </script>
 
 <div class='modal-overlay'>
     <div class='modal'>
         <label for='filename'>Filename</label>
-        <input type='text' id='filename' value={filename} />
+        <input type='text' id='filename' bind:value={filename} />
         <div class='buttons-container'>
-            <button>Cancel</button>
-            <button>Save</button>
+            <button on:click={closeModal}>Cancel</button>
+            <button on:click={saveFile(filename)}>Save</button>
         </div>
     </div>
 </div>
@@ -47,6 +50,12 @@
 
                     &:first-of-type {
                         margin-right: 10px;
+                    }
+
+                    &:last-of-type {
+                        background-color: #278ea5;
+                        color: #ffffff;
+                        border: transparent;
                     }
                 }
             }
