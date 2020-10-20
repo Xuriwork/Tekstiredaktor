@@ -29,7 +29,7 @@
 
 	
 	form {
-		color: #ffffff;
+		color: #f8f8f8;
 		width: 800px;
 		max-width: 95%;
 		margin-top: 10px;
