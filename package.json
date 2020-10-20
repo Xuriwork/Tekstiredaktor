@@ -18,6 +18,8 @@
   "dependencies": {
     "node-sass": "^4.14.1",
     "sirv-cli": "^1.0.0",
-    "svelte-preprocess": "^4.5.1"
+    "svelte-preprocess": "^4.5.1",
+    "workbox-sw": "^5.1.4",
+    "workbox-window": "^5.1.4"
   }
 }
