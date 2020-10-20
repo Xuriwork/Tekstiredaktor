@@ -13,7 +13,7 @@ body {
 
 body {
 	color: #333;
-	background-color: #324e7b;
+	background-color: #1A202C;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
@@ -25,11 +25,14 @@ input, button, select, textarea {
 	font-family: inherit;
 	font-size: inherit;
 	-webkit-padding: 0.4em 0;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
+	padding: 0.2em;
 	box-sizing: border-box;
 	border: 1px solid #ccc;
 	border-radius: 2px;
+}
+
+button:focus, textarea:focus {
+	outline: none;
 }
 
 input:disabled {
@@ -40,6 +43,7 @@ button {
 	color: #333;
 	background-color: #f4f4f4;
 	outline: none;
+	cursor: pointer;
 }
 
 button:disabled {
