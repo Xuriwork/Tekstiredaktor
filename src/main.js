@@ -4,7 +4,7 @@ const app = new App({
 	target: document.body
 });
 
-if ('serviceWorker' in navigator) {
+if (process.env.production && 'serviceWorker' in navigator) {
 	navigator.serviceWorker.register('/service-worker.js');
 };
 

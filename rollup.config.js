@@ -2,6 +2,7 @@ import svelte from 'rollup-plugin-svelte';
 import preprocess from 'svelte-preprocess';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import replace from '@rollup/plugin-replace';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 
@@ -37,6 +38,13 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		replace({
+			process: JSON.stringify({
+				env: {
+					production: production,
+				}
+			})
+		}),
 		svelte({
 			// enable run-time checks when not in production
 			dev: !production,

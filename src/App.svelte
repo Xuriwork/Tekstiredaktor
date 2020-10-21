@@ -1,6 +1,7 @@
 <script>
 	import Modal from './Modal.svelte';
-	
+	import { writable } from 'svelte/store';
+
 	let editorContent = '';
 	let wordCount = 0;
 	let characterCount = editorContent.length;
@@ -8,10 +9,22 @@
 	let fileInput;
 	let isModalOpen = false;
 	
+	let editor;
+	let editorFooter;
+
+	let storedIsFullscreen = JSON.parse(localStorage.getItem('fullscreen'));
+	let isFullscreen = writable(storedIsFullscreen);
+
+	isFullscreen.subscribe((value) => {
+		value = value === null ? false : value;
+		storedIsFullscreen = value;
+		localStorage.setItem('fullscreen', value);
+	});
+
 	const calculateWordCount = () => {
 		const spiltWords = editorContent.trim().split(/\s+/);
 		wordCount = spiltWords.length;
-		
+
 		characterCount = editorContent.length;
 
 		lineCount = editorContent.split('\n').length;
@@ -19,7 +32,7 @@
 	};
 
 	const fileType = {
-		type: 'text/plain;charset=utf-8'
+		type: 'text/plain;charset=utf-8',
 	};
 
 	const anchor = document.createElement('a');
@@ -31,40 +44,47 @@
 		anchor.href = objURL;
 		anchor.download = filename;
 		anchor.click();
-		
+
 		URL.revokeObjectURL(objURL);
 		closeModal();
 	};
 
 	const openInput = () => fileInput.click();
-	const clearInput = (event) => event.target.value = null;
-	
+	const clearInput = (event) => (event.target.value = null);
+
 	const openFile = (input) => {
 		const file = input.target.files[0];
 		const reader = new FileReader();
 		reader.readAsText(file);
 
-		reader.onload = () => editorContent = reader.result;
+		reader.onload = () => (editorContent = reader.result);
 		reader.onerror = () => console.log(reader.error);
 	};
 
-	const openModal = () => isModalOpen = !isModalOpen;
-	const closeModal = () => isModalOpen = false;
+	const openModal = () => (isModalOpen = !isModalOpen);
+	const closeModal = () => (isModalOpen = false);
+	const toggleFullScreen = () => isFullscreen.update(v => !JSON.parse(v));
 
 </script>
 
 <div class='app-component'>
-	<div class='editor'>
+	<div class='editor' class:isFullscreen='{storedIsFullscreen}' bind:this={editor}>
+		<button class='fullscreen-button' on:click={toggleFullScreen}>
+			{#if storedIsFullscreen}
+				<img src='./assets/minimize.svg' alt='minimize' />
+			{:else}
+				<img src='./assets/maximize.svg' alt='maximize' />
+			{/if}
+		</button>
+		<label for='editorContent'></label>
 		<textarea
 			bind:value={editorContent}
 			placeholder='Enter some text...'
-			id='area'
+			id='editorContent'
 			spellcheck='false'
-			class='ember-text-area ember-view' 
-			on:keyup={calculateWordCount}
-		></textarea>
+			on:keyup={calculateWordCount} />
 	</div>
-	<div class='editor-footer'>
+	<div class='editor-footer' class:isFullscreen='{storedIsFullscreen}' bind:this={editorFooter}>
 		<div>
 			<span>Words: {wordCount}</span>
 			<span>Characters: {characterCount}</span>
@@ -74,22 +94,20 @@
 			<button on:click={openInput}>Open</button>
 			<button on:click={openModal}>Save</button>
 		</div>
-		<input 
-			type='file' 
-			accept='text/plain' 
-			bind:this={fileInput} 
-			on:change={openFile} 
-			style="display: none;" 
-			on:click={clearInput}
-		/>
+		<input
+			type='file'
+			accept='text/plain'
+			bind:this={fileInput}
+			on:change={openFile}
+			style='display: none;'
+			on:click={clearInput} />
 	</div>
 	{#if isModalOpen}
-		<Modal saveFile={saveFile} closeModal={closeModal} />
+		<Modal {saveFile} {closeModal} />
 	{/if}
 </div>
 
 <style type='scss'>
-
 	%flex-column-center {
 		display: flex;
 		flex-direction: column;
@@ -103,15 +121,41 @@
 		width: 100%;
 	}
 
+	.fullscreen-button {
+		@extend %flex-column-center;
+		width: 30px;
+		height: 30px;
+		text-align: center;
+		background-color: transparent;
+		border: none;
+		position: absolute;
+		top: 15px;
+		right: 15px;
+
+		img {
+			text-align: center;
+			vertical-align: middle;
+		}
+	}
+
 	.editor {
 		width: 800px;
 		max-width: 95%;
 		height: 500px;
 		border-radius: 10px 10px 0 0;
-		background-color: #3A4556;
+		background-color: #3a4556;
 		padding: 5px;
 		box-sizing: border-box;
-		
+		position: relative;
+		transition: all 0.4s ease-in-out;
+
+		&.isFullscreen {
+			max-width: 100%;
+			width: 100%;
+			height: 100%;
+			border-radius: 0;
+		};
+
 		textarea {
 			width: 100%;
 			height: 100%;
@@ -119,15 +163,15 @@
 			resize: none;
 			padding: 20px;
 			box-sizing: border-box;
-			background-color: #2D3848;
-			color: #A4AEBA;
+			background-color: #2d3848;
+			color: #a4aeba;
 			border: none;
 
 			&::placeholder {
-				color: #A4AEBA;
+				color: #a4aeba;
 			}
 
-			&::-webkit-scrollbar-track	{
+			&::-webkit-scrollbar-track {
 				border-radius: 6px;
 			}
 
@@ -137,43 +181,61 @@
 			}
 
 			&::-webkit-scrollbar-thumb {
-				background-color: #81E5D9;
+				background-color: #81e5d9;
 				border-radius: 6px;
 			}
 		}
 	}
 
 	.editor-footer {
-		background-color: #3A4556;
+		background-color: #3a4556;
 		color: #ffffff;
 		width: 800px;
 		max-width: 95%;
 		border-radius: 0 0 10px 10px;
-		padding-bottom: 8px;
-		padding-left: 30px;
-		padding-right: 30px;
-		padding-top: 2px;
+		padding: 2px 30px 8px;
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
+		transition: all 0.4s ease-in-out;
+
+		&.isFullscreen {
+			max-width: 100%;
+			width: 100%;
+			border-radius: 0;
+			padding: 10px;
+			padding-bottom:  10px;
+			padding-left: 15px;
+		};
 
 		> div {
-
 			span {
 				font-weight: 560;
 
 				&:not(:last-of-type) {
-				margin-right: 10px;
+					margin-right: 10px;
 				}
 			}
 		}
 
 		.buttons-container {
 			button {
-				padding: 0 20px;
+				padding: 2px 20px;
+				border-radius: 4px;
+				border: 2px solid #cccccc;
+				height: 30px;
+				box-sizing: border-box;
+
+				&:last-of-type {
+					color: #ffffff;
+					border: 2px solid #217183;
+					background-color: #3aa2b9;
+					
+				}
 			}
 		}
 	}
+
 </style>
