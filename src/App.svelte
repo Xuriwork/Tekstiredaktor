@@ -23,12 +23,13 @@
 
 	const calculateWordCount = () => {
 		const spiltWords = editorContent.trim().split(/\s+/);
-		wordCount = spiltWords.length;
+		wordCount = spiltWords.length === 1 && spiltWords[0] === '' ? 0 : spiltWords.length;
 
 		characterCount = editorContent.length;
 
-		lineCount = editorContent.split('\n').length;
-		lineCount = editorContent.split(/\r?\n|\r/).length;
+		lineCount = editorContent === '' ? 0 : editorContent.split('\n').length;
+		lineCount = editorContent === '' ? 0 : editorContent.split(/\r?\n|\r/).length;
+
 	};
 
 	const fileType = {
@@ -86,9 +87,9 @@
 	</div>
 	<div class='editor-footer' class:isFullscreen='{storedIsFullscreen}' bind:this={editorFooter}>
 		<div>
-			<span>Words: {wordCount}</span>
-			<span>Characters: {characterCount}</span>
-			<span>Lines: {lineCount}</span>
+			<span>words: {wordCount}</span>
+			<span>characters: {characterCount}</span>
+			<span>lines: {lineCount}</span>
 		</div>
 		<div class='buttons-container'>
 			<button on:click={openInput}>Open</button>
@@ -232,8 +233,41 @@
 					color: #ffffff;
 					border: 2px solid #217183;
 					background-color: #3aa2b9;
-					
+					margin-left: 10px;
 				}
+			}
+		}
+	}
+
+
+	@media (max-width: 600px) {
+
+		.fullscreen-button {
+			display: none;
+		}
+
+		.editor {
+			max-width: 100%;
+			width: 100%;
+			height: 100%;
+			border-radius: 0;
+		}
+
+		.editor-footer {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			max-width: 100%;
+			width: 100%;
+			border-radius: 0;
+			padding: 10px;
+			padding-bottom:  10px;
+			padding-left: 15px;
+
+			.buttons-container {
+				display: flex;
+				width: 100%;
+				margin-top: 8px;
 			}
 		}
 	}
