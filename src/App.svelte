@@ -232,6 +232,8 @@
 			}
 		}
 
+	}
+
 		.buttons-container {
 			button {
 				padding: 2px 20px;
@@ -256,7 +258,6 @@
 					background-color: #3aa2b9;
 				}
 			}
-		}
 	}
 
 
@@ -288,6 +289,23 @@
 				display: flex;
 				width: 100%;
 				margin-top: 8px;
+			}
+		}
+	}
+
+	@media (max-width: 450px) {
+		.editor-footer {
+		padding-left: 10px;
+
+		.buttons-container {
+				flex-direction: column-reverse;
+				margin-top: 20px;
+				
+				button {
+					&:nth-child(2) {
+						margin: 15px 0;
+					}
+				}
 			}
 		}
 	}
