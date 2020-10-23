@@ -1,4 +1,5 @@
 <script>
+    import { fade } from 'svelte/transition';
     import { notyfDecrypted } from './utils/notyf';
     import checkIfEmpty from './utils/checkIfEmpty';
 
@@ -20,7 +21,7 @@
     };
 </script>
 
-<div class='modal'>
+<div class='modal' transition:fade={{ duration: 200 }}>
     <h3>Decrypt</h3>
     <label for='encryptedText'>Encrypted Text</label>
     <textarea

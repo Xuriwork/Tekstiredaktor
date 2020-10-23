@@ -1,5 +1,5 @@
 <script>
-    import { fly } from 'svelte/transition';
+    import { fade } from 'svelte/transition';
     import Encrypt from "./Encrypt.svelte";
     import Decrypt from "./Decrypt.svelte";
 
@@ -28,7 +28,7 @@
     {#if isEncryptModalOpen}
         <Encrypt {editorContent} />
         {:else}
-            <div class='modal' transition:fly={{ y: 100, duration: 200 }}>
+            <div class='modal'>
                 <h3>Message Encryption</h3>
                 <div class='buttons-container'>
                     <button on:click={showDecrypt}>Decrypt</button>

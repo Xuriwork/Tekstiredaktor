@@ -1,7 +1,7 @@
 <script>
 	import Modal from './Modal.svelte';
 	import { writable } from 'svelte/store';
-	import EncryptModal from './EncryptModal.svelte';
+	import EncryptDecryptModalContainer from './EncryptDecryptModalContainer.svelte';
 
 	let editorContent = '';
 	let wordCount = 0;
@@ -116,7 +116,7 @@
 	{/if}
 
 	{#if isModalEncryptOpen}
-		<EncryptModal {closeModal} {editorContent} />
+		<EncryptDecryptModalContainer {closeModal} {editorContent} />
 	{/if}
 </div>
 

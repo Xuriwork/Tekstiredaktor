@@ -1,5 +1,6 @@
 <script>
     import { nanoid } from 'nanoid';
+    import { fade } from 'svelte/transition';
     import { notyfEncrypted } from './utils/notyf';
     import checkIfEmpty from './utils/checkIfEmpty';
 
@@ -21,7 +22,7 @@
     };
 </script>
 
-<div class='modal'>
+<div class='modal' transition:fade={{ duration: 200 }}>
     <h3>Encrypt</h3>
     <textarea
         bind:value={editorContent}
