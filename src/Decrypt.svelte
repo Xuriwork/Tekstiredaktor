@@ -1,56 +1,60 @@
 <script>
-    import { nanoid } from 'nanoid';
-    import { notyfEncrypted } from './utils/notyf';
+    import { notyfDecrypted } from './utils/notyf';
     import checkIfEmpty from './utils/checkIfEmpty';
 
-    export let editorContent;
+    let encryptedText = '';
+    let decryptedText = null;
     let passphrase = '';
     let errors = {};
 
-    const generatePassphrase = () => passphrase = nanoid();
-    
-    const encryptText = () => {
-        const { errors: _errors, valid } = checkIfEmpty(passphrase, editorContent);
+    const decryptText = () => {
+        const { errors: _errors, valid } = checkIfEmpty(passphrase, encryptedText);
 
         if (!valid) {
             return errors = _errors;
         };
 
-        const encryptedText = sjcl.encrypt(passphrase, editorContent, { count: 2048, ks: 256 });
-        notyfEncrypted(encryptedText);
+        const _decryptedText = sjcl.decrypt(passphrase, encryptedText, { count: 2048, ks: 256 });
+        decryptedText = _decryptedText;
+        notyfDecrypted();
     };
 </script>
 
 <div class='modal'>
-    <h3>Encrypt</h3>
+    <h3>Decrypt</h3>
+    <label for='encryptedText'>Encrypted Text</label>
     <textarea
-        bind:value={editorContent}
+        bind:value={encryptedText}
         spellcheck='false' 
-        disabled={true}
         class:error={errors.message} 
     />
     {#if errors.message}
         <span style='color: #d72323;'>{errors.message}</span>
     {/if}
+    <label for='decryptedText'>Derypted Text</label>
+    <textarea
+        bind:value={decryptedText}
+        disabled={true}
+    />
     <label for='passphrase'>Passphrase</label>
     <input 
         type='text' 
         name='passphrase' 
         id='passphrase' 
         bind:value={passphrase} 
-        class:error={errors.passphrase} 
+        class:error={errors.passphrase}  
     />
     {#if errors.passphrase}
         <span style='color: #d72323;'>{errors.passphrase}</span>
     {/if}
-    <button on:click={generatePassphrase}>Generate passphrase</button>
-    <button on:click={encryptText}>Encrypt</button>
+    <button on:click={decryptText}>Decrypt</button>
 </div>
 
 <style lang='scss'>
 .modal {
     width: 500px;
     max-width: 95%;
+
     background-color: #3a4556;
     color: #ffffff;
     display: flex;
@@ -66,17 +70,6 @@
     
     button {
         margin-top: 10px;
-        border-radius: 4px;
-
-        &:nth-of-type(1) {
-            margin-top: 15px;
-        }
-
-        &:nth-of-type(2) {
-            background-color: #21e6c1;
-            color: #ffffff;
-            border: 2px solid #1a9e86;
-        }
     }
 
     input, textarea {
@@ -88,7 +81,7 @@
             border: 1px solid #d72323;
         }
     }
-    
+
     textarea {
         resize: none;
         height: 100px;
@@ -96,6 +89,17 @@
 
     label {
         margin-top: 10px;
+    }
+
+    button {
+        margin-top: 15px;
+        border-radius: 4px;
+
+        &:nth-of-type(2) {
+            background-color: #21e6c1;
+            color: #ffffff;
+            border: 2px solid #1a9e86;
+        }
     }
 }    
 </style>

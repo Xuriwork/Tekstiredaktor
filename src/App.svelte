@@ -99,7 +99,7 @@
 			<span>lines: {lineCount}</span>
 		</div>
 		<div class='buttons-container'>
-			<button on:click={openEncryptModal}>Encrypt</button>
+			<button on:click={openEncryptModal}>Encrypt/Decrypt</button>
 			<button on:click={openInput}>Open</button>
 			<button on:click={openModal}>Save</button>
 		</div>
@@ -116,7 +116,7 @@
 	{/if}
 
 	{#if isModalEncryptOpen}
-		<EncryptModal {closeModal} isModalOpen={isModalEncryptOpen} />
+		<EncryptModal {closeModal} {editorContent} />
 	{/if}
 </div>
 

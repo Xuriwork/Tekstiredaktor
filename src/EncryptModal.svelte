@@ -1,11 +1,14 @@
 <script>
     import { fly } from 'svelte/transition';
+    import Encrypt from "./Encrypt.svelte";
+    import Decrypt from "./Decrypt.svelte";
 
     let modalOverlay;
-    let encryptModal = false;
-    let decryptModal = false;
+    let isEncryptModalOpen = false;
+    let isDecryptModalOpen = false;
+
     export let closeModal;
-    export let isModalOpen;
+    export let editorContent;
 
     window.onclick = (e) => {
         if (e.target.contains(modalOverlay)) {
@@ -13,20 +16,26 @@
         };
     };
 
-    const showEncrypt = () => encryptModal = !encryptModal;
-    const showDecrypt = () => decryptModal = !decryptModal;
+    const showEncrypt = () => isEncryptModalOpen = !isEncryptModalOpen;
+    const showDecrypt = () => isDecryptModalOpen = !isDecryptModalOpen;
     
 </script>
 
 <div class='modal-overlay' bind:this={modalOverlay}>
-    {#if isModalOpen}
-        <div class='modal' transition:fly={{ y: 100, duration: 200 }}>
-            <h3>Message Encryption</h3>
-            <div class='buttons-container'>
-                <button on:click={showDecrypt}>Decrypt</button>
-                <button on:click={showEncrypt}>Encrypt</button>
+    {#if isDecryptModalOpen}
+        <Decrypt />
+    {:else}
+    {#if isEncryptModalOpen}
+        <Encrypt {editorContent} />
+        {:else}
+            <div class='modal' transition:fly={{ y: 100, duration: 200 }}>
+                <h3>Message Encryption</h3>
+                <div class='buttons-container'>
+                    <button on:click={showDecrypt}>Decrypt</button>
+                    <button on:click={showEncrypt}>Encrypt</button>
+                </div>
             </div>
-        </div>
+        {/if}
     {/if}
 </div>
 
