@@ -1,6 +1,7 @@
 <script>
 	import Modal from './Modal.svelte';
 	import { writable } from 'svelte/store';
+	import EncryptModal from './EncryptModal.svelte';
 
 	let editorContent = '';
 	let wordCount = 0;
@@ -8,6 +9,7 @@
 	let lineCount = 0;
 	let fileInput;
 	let isModalOpen = false;
+	let isModalEncryptOpen = false;
 	
 	let editor;
 	let editorFooter;
@@ -63,7 +65,12 @@
 	};
 
 	const openModal = () => (isModalOpen = !isModalOpen);
-	const closeModal = () => (isModalOpen = false);
+	const closeModal = () => {
+		isModalOpen = false;
+		isModalEncryptOpen = false;
+	};
+	const openEncryptModal = () => (isModalEncryptOpen = !isModalEncryptOpen);
+
 	const toggleFullScreen = () => isFullscreen.update(v => !JSON.parse(v));
 
 </script>
@@ -92,6 +99,7 @@
 			<span>lines: {lineCount}</span>
 		</div>
 		<div class='buttons-container'>
+			<button on:click={openEncryptModal}>Encrypt</button>
 			<button on:click={openInput}>Open</button>
 			<button on:click={openModal}>Save</button>
 		</div>
@@ -104,7 +112,11 @@
 			on:click={clearInput} />
 	</div>
 	{#if isModalOpen}
-		<Modal {saveFile} {closeModal} />
+		<Modal {saveFile} {closeModal} {isModalOpen} />
+	{/if}
+
+	{#if isModalEncryptOpen}
+		<EncryptModal {closeModal} isModalOpen={isModalEncryptOpen} />
 	{/if}
 </div>
 
@@ -207,8 +219,7 @@
 			width: 100%;
 			border-radius: 0;
 			padding: 10px;
-			padding-bottom:  10px;
-			padding-left: 15px;
+			padding-bottom:  15px;
 		};
 
 		> div {
@@ -229,11 +240,20 @@
 				height: 30px;
 				box-sizing: border-box;
 
-				&:last-of-type {
+				&:nth-child(1) {
+					color: #ffffff;
+					border: 2px solid #c26844;
+					background-color: #ff8a5c;
+				}
+
+				&:nth-child(2) {
+					margin: 0 10px;
+				}
+
+				&:nth-child(3) {
 					color: #ffffff;
 					border: 2px solid #217183;
 					background-color: #3aa2b9;
-					margin-left: 10px;
 				}
 			}
 		}

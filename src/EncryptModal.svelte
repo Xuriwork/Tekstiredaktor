@@ -1,29 +1,30 @@
 <script>
-    let modalOverlay;
-    let filename;
-    export let saveFile;
-    export let closeModal;
-	export let isModalOpen;
-
     import { fly } from 'svelte/transition';
 
-    
+    let modalOverlay;
+    let encryptModal = false;
+    let decryptModal = false;
+    export let closeModal;
+    export let isModalOpen;
+
     window.onclick = (e) => {
         if (e.target.contains(modalOverlay)) {
             closeModal();
         };
     };
+
+    const showEncrypt = () => encryptModal = !encryptModal;
+    const showDecrypt = () => decryptModal = !decryptModal;
     
 </script>
 
 <div class='modal-overlay' bind:this={modalOverlay}>
     {#if isModalOpen}
         <div class='modal' transition:fly={{ y: 100, duration: 200 }}>
-            <label for='filename'>Filename</label>
-            <input type='text' id='filename' bind:value={filename} />
+            <h3>Message Encryption</h3>
             <div class='buttons-container'>
-                <button on:click={closeModal}>Cancel</button>
-                <button on:click={saveFile(filename)}>Save</button>
+                <button on:click={showDecrypt}>Decrypt</button>
+                <button on:click={showEncrypt}>Encrypt</button>
             </div>
         </div>
     {/if}
@@ -54,20 +55,25 @@
             border-radius: 5px;
             
             .buttons-container {
-                margin-top: 10px;
+                margin-top: 15px;
                 display: flex;
-                justify-content: flex-end;
+                justify-content: space-between;
 
                 button {
+                    text-decoration: none;
                     padding: 2px 20px;
+                    border-radius: 2px;
 
                     &:first-of-type {
-                        margin-right: 10px;
+                        background-color: #21e6c1;
+                        border: 2px solid #1dc7a8;
+                        color: #ffffff;
                     }
-
+                    
                     &:last-of-type {
-                        background-color: #278ea5;
-                        border: 2px solid #237c91;
+                        margin-left: 10px;
+                        background-color: #00d1ff;
+                        border: 2px solid #08b2d8;
                         color: #ffffff;
                     }
                 }
